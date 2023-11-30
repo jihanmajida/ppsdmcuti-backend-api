@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('dokumens', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('karyawan_id');
+            $table->bigInteger('karyawan_id')->unsigned();
             $table->string('Dokumen');
             $table->foreign('karyawan_id')->references('id')->on('karyawans')->onUpdate('cascade')->onDelete('no action');
             $table->timestamps();
