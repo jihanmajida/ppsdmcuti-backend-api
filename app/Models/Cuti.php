@@ -19,5 +19,9 @@ class Cuti extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+    public function karyawan()
+    {
+        return $this->belongsTo(Karyawan::class);
+    }
     
 }

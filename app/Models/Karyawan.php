@@ -18,4 +18,18 @@ class Karyawan extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function cuti(): HasMany
+    {
+        return $this->hasMany(Cuti::class);
+    }
+
+    public function docs(): HasMany
+    {
+        return $this->hasMany(Dokumen::class);
+    }
 }
