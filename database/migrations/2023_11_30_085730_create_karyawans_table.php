@@ -25,7 +25,6 @@ return new class extends Migration
                         'Seksi Kompetensi Administrator', 'Seksi Kompetensi Pengawas',
                         'Seksi Kompetensi Jabatan Fungsional', 'Seksi Kompetensi Pelaksana',
                         'Seksi Kompetensi Kepala Daerah, Wakil KEpala Daerah, DPR, dan Lurah']);
-            $table->string('foto_profil');
             $table->integer('sisa_cuti');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('no action');
             $table->foreign('dokumen_id')->references('id')->on('dokumens')->onUpdate('cascade')->onDelete('no action');

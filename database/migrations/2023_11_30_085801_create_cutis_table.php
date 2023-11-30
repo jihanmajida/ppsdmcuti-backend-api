@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('alasan');
             $table->string('bukti');
             $table->foreign('karyawan_id')->references('id')->on('karyawans')->onUpdate('cascade')->onDelete('no action');
-
             $table->timestamps();
         });
     }
