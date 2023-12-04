@@ -23,5 +23,4 @@ class Cuti extends Model
     {
         return $this->belongsTo(Karyawan::class);
     }
-    
 }

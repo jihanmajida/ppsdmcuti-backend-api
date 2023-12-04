@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('karyawans', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('dokumen_id')->unsigned();
             $table->string('NIP');
             $table->string('Nama');
             $table->enum('Divisi', ['Fungsional Widyaiswara', 
@@ -27,7 +26,6 @@ return new class extends Migration
                         'Seksi Kompetensi Kepala Daerah, Wakil KEpala Daerah, DPR, dan Lurah']);
             $table->integer('sisa_cuti');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('no action');
-            $table->foreign('dokumen_id')->references('id')->on('dokumens')->onUpdate('cascade')->onDelete('no action');
             $table->timestamps();
         });
     }

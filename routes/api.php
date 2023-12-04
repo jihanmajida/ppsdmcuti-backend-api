@@ -17,3 +17,18 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('auth/login', [UserController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [UserController::class, 'fetch']);
+    Route::post('/auth/logout', [UserController::class, 'logout']);
+
+    Route::get('/cuti', [CutiController::class, 'index']);
+    Route::post('/cuti', [CutiController::class, 'store']);
+    Route::get('/cuti/{id}', [CutiController::class, 'show']);
+
+    Route::apiResource('dokumen', 'DokumenController');
+    Route::apiResource('cuti', 'CutiController');
+    Route::apiResource('karyawan', 'KaryawanController');
+});
