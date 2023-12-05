@@ -28,6 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cuti', [CutiController::class, 'store']);
     Route::get('/cuti/{id}', [CutiController::class, 'show']);
 
+    Route::get('/dokumen', [DokumenController::class, 'index']);
+    Route::post('/dokumen/upload', [DokumenController::class, 'upload']);
+    Route::get('/dokumen/{id}', [DokumenController::class, 'show']);
+
     Route::apiResource('dokumen', 'DokumenController');
     Route::apiResource('cuti', 'CutiController');
     Route::apiResource('karyawan', 'KaryawanController');
