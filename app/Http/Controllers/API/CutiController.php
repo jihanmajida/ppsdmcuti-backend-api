@@ -28,11 +28,22 @@ class CutiController extends Controller
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'reason' => $request->input('reason'),
-            'status' => 'pending',
+            'prove' => $request->input('proves'),
             'user_id' => auth()->user()->id,
             'karyawan_id' => $karyawan->id, // Menghubungkan pengajuan cuti dengan data karyawan
         ]);
 
         return response()->json(['message' => 'Pengajuan cuti berhasil diajukan', 'cuti' => $cuti], 201);
+    }
+
+    public function updateCuti(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'nullable|string|max:255',
+            'end_date' => 'nullable|string|max:255',
+            'reason' => 'nullable|file',
+            'prove' => 'nullable|file',
+        ]);
+        return response()->json(['message' => 'Pengajuan cuti berhasil dieditn', 'cuti' => $cuti], 201);
     }
 }

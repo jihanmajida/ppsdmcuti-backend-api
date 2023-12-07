@@ -4,21 +4,44 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     //function login
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required',
+        ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('api-token')->plainTextToken;
+        try {
+            $credentials = request(['email', 'password']);
 
-            return response()->json(['token' => $token], 200);
-        } else {
-            return response()->json(['message' => 'Invalid input'], 401);
+            if (!Auth::attempt($credentials)) {
+                return ResponseFormatter::error('Email atau password salah. Autentikasi gagal.', 401);
+            }
+
+            $user = User::where('email', $request->input('email'))->with('store')->first();
+
+            if (!Hash::check($request->input('password'), $user->password, [])) {
+                throw new Exception('Invalid credentials');
+            }
+
+            if ($user->disabled_at) {
+                return ResponseFormatter::error('Status pengguna tidak aktif. Hubungi Admin apabila ada kesalahan.', 400);
+            }
+
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            return ResponseFormatter::success([
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
+            ], 'Berhasil masuk', 200);
+        } catch (Exception $error) {
+            return ResponseFormatter::error('Ada yang Salah. Autentikasi gagal.'  . $error, 500);
         }
     }
 
