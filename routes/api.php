@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CutiController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/cuti', [CutiController::class, 'index']);
     Route::post('/cuti', [CutiController::class, 'store']);
     Route::get('/cuti/{id}', [CutiController::class, 'show']);
+    Route::put('/cuti/{id}', [CutiController::class, 'updatecuti']);
 
     Route::get('/dokumen', [DokumenController::class, 'index']);
     Route::post('/dokumen/upload', [DokumenController::class, 'upload']);

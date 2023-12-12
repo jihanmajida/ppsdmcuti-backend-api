@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Helpers\ResponseFormatter;
 use Illuminate\Support\Facades\Auth;
+
 
 class UserController extends Controller
 {
@@ -23,7 +28,7 @@ class UserController extends Controller
                 return ResponseFormatter::error('Email atau password salah. Autentikasi gagal.', 401);
             }
 
-            $user = User::where('email', $request->input('email'))->with('store')->first();
+            $user = User::where('email', $request->input('email'))->with('karyawan')->first();
 
             if (!Hash::check($request->input('password'), $user->password, [])) {
                 throw new Exception('Invalid credentials');

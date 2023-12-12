@@ -2,48 +2,70 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Cuti;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Karyawan;
 use Illuminate\Http\Request;
 
 class CutiController extends Controller
 {
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        // Validasi input
+        // Validasi data pengajuan cuti
         $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'reason' => 'required|string',
+            'karyawan_id' => 'required|exists:karyawan,id',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'alasan' => 'required|string',
         ]);
 
-        // Ambil data karyawan dari database
-        $karyawan = Karyawan::where('user_id', auth()->user()->id)->first();
+        // Ambil data karyawan dari KaryawanController
+        $karyawanData = KaryawanController::getKaryawanData($request->input('karyawan_id'));
 
-        if (!$karyawan) {
-            return response()->json(['message' => 'Data karyawan tidak ditemukan'], 404);
+        // Jika karyawan ditemukan, buat pengajuan cuti
+        if ($karyawanData) {
+            $cuti = Cuti::create([
+                'karyawan_id' => $request->input('karyawan_id'),
+                'nama_karyawan' => $karyawanData['nama'], // Gantilah dengan nama kolom yang sesuai
+                'tanggal_mulai' => $request->input('tanggal_mulai'),
+                'tanggal_selesai' => $request->input('tanggal_selesai'),
+                'alasan' => $request->input('alasan'),
+            ]);
+
+            // Tambahkan log atau notifikasi jika diperlukan
+
+            return response()->json(['message' => 'Pengajuan cuti berhasil disimpan', 'data' => $cuti], 201);
+        } else {
+            return response()->json(['message' => 'Karyawan tidak ditemukan'], 404);
+        }
+    }
+
+    public function updateCuti(Request $request, string $id)
+    {
+        $request->validate([
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'alasan' => 'required|string',
+        ]);
+
+        // Cek apakah data cuti dengan ID yang diberikan ada
+        $cuti = Cuti::find($id);
+
+        if (!$cuti) {
+            return response()->json(['message' => 'Data cuti tidak ditemukan'], 404);
         }
 
-        // Simpan pengajuan cuti ke dalam database
-        $cuti = Cuti::create([
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
-            'reason' => $request->input('reason'),
-            'prove' => $request->input('proves'),
-            'user_id' => auth()->user()->id,
-            'karyawan_id' => $karyawan->id, // Menghubungkan pengajuan cuti dengan data karyawan
+        // Update data cuti
+        $cuti->update([
+            'tanggal_mulai' => $request->input('tanggal_mulai'),
+            'tanggal_selesai' => $request->input('tanggal_selesai'),
+            'alasan' => $request->input('alasan'),
         ]);
 
-        return response()->json(['message' => 'Pengajuan cuti berhasil diajukan', 'cuti' => $cuti], 201);
+        // Tambahkan log atau notifikasi jika diperlukan
+
+        return response()->json(['message' => 'Data cuti berhasil diperbarui', 'data' => $cuti], 200);
     }
 
-    public function updateCuti(Request $request)
-    {
-        $request->validate([
-            'start_date' => 'nullable|string|max:255',
-            'end_date' => 'nullable|string|max:255',
-            'reason' => 'nullable|file',
-            'prove' => 'nullable|file',
-        ]);
-        return response()->json(['message' => 'Pengajuan cuti berhasil dieditn', 'cuti' => $cuti], 201);
-    }
+
 }
