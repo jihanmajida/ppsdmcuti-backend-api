@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\CutiController;
+use App\Http\Controllers\API\CutiController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\DokumenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

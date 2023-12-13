@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class Dokumenontroller extends Controller
+class DokumenController extends Controller
 {
     public function upload(Request $request)
     {
