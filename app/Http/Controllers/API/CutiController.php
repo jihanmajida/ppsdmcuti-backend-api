@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Cuti;
+use App\Models\Karyawan;
+use App\Http\Controllers\API\Auth;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Karyawan;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CutiController extends Controller
 {
@@ -17,6 +19,8 @@ class CutiController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'alasan' => 'required|string',
+            'alamat'=>'required|string',
+            'jenis_cuti'=>'required|string'
         ]);
 
         // Ambil data karyawan dari KaryawanController
@@ -30,6 +34,8 @@ class CutiController extends Controller
                 'tanggal_mulai' => $request->input('tanggal_mulai'),
                 'tanggal_selesai' => $request->input('tanggal_selesai'),
                 'alasan' => $request->input('alasan'),
+                'alamat' => $request->input('address'),
+                'jenis_cuti'=>$request->input('jenis_cuti')
             ]);
 
             // Tambahkan log atau notifikasi jika diperlukan
@@ -46,6 +52,8 @@ class CutiController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'alasan' => 'required|string',
+            'alamat'=>'required|string',
+            'jenis_cuti'=>'required|string'
         ]);
 
         // Cek apakah data cuti dengan ID yang diberikan ada
@@ -60,6 +68,8 @@ class CutiController extends Controller
             'tanggal_mulai' => $request->input('tanggal_mulai'),
             'tanggal_selesai' => $request->input('tanggal_selesai'),
             'alasan' => $request->input('alasan'),
+            'alamat' => $request->input('address'),
+            'jenis_cuti'=>$request->input('jenis_cuti')
         ]);
 
         // Tambahkan log atau notifikasi jika diperlukan
@@ -67,5 +77,16 @@ class CutiController extends Controller
         return response()->json(['message' => 'Data cuti berhasil diperbarui', 'data' => $cuti], 200);
     }
 
+    public function generatePDF(Request $request, string $id)
+    {
+        $cuti = Cuti::with('karyawan')->find($id);
 
+        if($request->has('download'))
+	    {
+	        $pdf = PDF::loadView('index',$cuti);
+	        return $pdf->download('users_pdf_example.pdf');
+	    }
+
+	    return view('generatePDF',compact('cuti'));
+    }
 }
